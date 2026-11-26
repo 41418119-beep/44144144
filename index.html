@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<title>ch9-2使用CSS製作多層級選單(2) - 質感美化版</title>
+<meta charset="utf-8">
+<style>
+/* [新增] 美化整體頁面背景與版面留白，讓選單在視覺上更集中 */
+body {
+    background-color: #f0f4f8;
+    padding: 40px;
+    margin: 0;
+    font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none; 
+}
+
+.menu {
+    /* [修改] 將原本較生硬的標楷體改為現代無襯線字體，並調整字重與字距提升質感 */
+    font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.menu > li { /* 子選擇器，只有第一層 */
+    float: left;
+    /* [新增] 第一層主選單之間增加些微間距，避免圓角與陰影重疊 */
+    margin-right: 8px;
+}
+
+.menu li {
+    position: relative;
+    padding: 0px;
+    /* [修改] 選單框線採 2px 實線，並使用與漸層背景同色系的加深海軍藍 (#1e3a8a) */
+    border: 2px solid #1e3a8a;
+    min-width: 145px; /* [修改] 略微加寬選單，讓文字與箭頭呼吸空間更充裕 */
+    /* [新增] 設定選單具備 5% 圓角，並搭配 overflow: hidden 裁切內部背景不超出圓角 */
+    border-radius: 5%;
+    overflow: hidden;
+    /* [新增] 加入立體投影與背景色，讓選單更具懸浮層次感 */
+    background-color: #3b82f6;
+    box-shadow: 0 4px 10px rgba(30, 58, 138, 0.18);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* [新增] 子選單內的項目上下增加微幅間距，凸顯每個項目的獨立 5% 圓角 */
+.menu ul li {
+    margin-bottom: 4px;
+}
+
+/* [新增] 滑鼠移入時恢復 overflow 為 visible，確保子選單能順利向外展開不被裁切，並增強陰影 */
+.menu li:hover {
+    overflow: visible;
+    box-shadow: 0 6px 16px rgba(30, 58, 138, 0.28);
+}
+
+.menu ul {
+    position: absolute;
+    z-index: 10;
+    top: 100%;
+    display: none; /* 預設ul不顯示 */
+}
+
+/* [新增] 設定「第一層選單」展開的「第二層子選單」，在其對應上層選單之右下方各 5% 處開始顯示 */
+.menu > li > ul {
+    top: 105%;  /* 上層高度 100% + 向下偏移 5% */
+    left: 5%;   /* 距離上層左側向右偏移 5% */
+}
+
+.menu ul li > ul { /* 定義上一層ul li與下一層ul的距離 */
+    z-index: 20;
+    /* [修改] 設定「第三層(含)以上子選單」，在其對應上層選單之右下方各 5% 處開始顯示 */
+    top: 105%;  /* 原為 5%，改為 105% 以符合「下方 5% 處」 */
+    left: 105%; /* 原為 95%，改為 105% 以符合「右方 5% 處」 */
+}
+
+.menu a {
+    display: block;
+    /* [修改] 增加上下左右內距，讓按鈕更飽滿好點擊 */
+    padding: 12px 18px;
+    text-decoration: none;
+    /* [修改] 保留原圖片語法，並加入同色系海洋藍漸層背景（即使沒有外部圖片也能呈現高質感） */
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%), url(img/btn1.png);
+    background-size: cover;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+    /* [新增] 讓連結按鈕本身也具備 5% 圓角，並加入平滑過渡動畫 */
+    border-radius: 5%;
+    transition: all 0.25s ease;
+}
+
+.menu a:hover {
+    /* [修改] 滑鼠移入時切換為深邃靛藍漸層，並讓文字微幅右移增加互動感 */
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%), url(img/btn2.png);
+    background-size: cover;
+    color: #fef08a; /* 搭配柔和亮黃色文字提升對比度 */
+    padding-left: 22px;
+}
+
+.menu li:hover > ul {
+    display: block; /* 移動到li，li下一層的ul才顯示 */
+    /* [新增] 子選單出現時加入微幅淡入上浮動畫 */
+    animation: fadeInMenu 0.2s ease-out;
+}
+
+/* [新增] 定義子選單展開的平滑動畫 */
+@keyframes fadeInMenu {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+</head>
+<body>
+<ul class="menu">
+    <li><a href="#">台北景點</a>
+        <ul>
+            <li><a href="#">台北101</a></li>
+            <li><a href="#">迪化街</a></li>
+            <li><a href="#">士林夜市</a></li>
+        </ul>
+    </li>
+    <li><a href="#">澎湖景點</a>
+        <ul>
+            <li><a href="#">跨海大橋</a></li>
+            <li><a href="#">沙灘</a></li>
+            <li><a href="#">觀音亭</a></li>
+        </ul>
+    </li>
+    <li><a href="#">台南景點</a>
+        <ul>
+            <li><a href="#">赤崁樓</a></li>
+            <li><a href="#">台南孔廟</a></li>
+            <li><a href="#">台南小吃 &#9656;</a>
+                <ul>
+                    <li><a href="#">八寶冰</a></li>
+                    <li><a href="#">蚵仔煎</a></li>
+                    <li><a href="#">米糕</a></li>
+                    <li><a href="#">牛肉湯</a></li>
+                    <li><a href="#">肉燥飯</a></li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+</ul>
+</body>
+</html>
